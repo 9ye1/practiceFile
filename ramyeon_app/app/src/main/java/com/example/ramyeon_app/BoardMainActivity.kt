@@ -3,6 +3,7 @@ package com.example.ramyeon_app
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.example.ramyeon_app.databinding.ActivityBoardMainBinding
 
@@ -24,6 +25,18 @@ class BoardMainActivity : AppCompatActivity() {
             "board_main" -> {
                 curFragment = BoardMainFragment()
             }
+
+            "board_read" -> {
+                curFragment = BoardReadFragment()
+            }
+
+            "board_write" -> {
+                curFragment = BoardWriteFragment()
+            }
+
+            "board_modify" -> {
+                curFragment = BoardModifyFragment()
+            }
         }
 
         val trans = supportFragmentManager.beginTransaction()
@@ -39,4 +52,10 @@ class BoardMainActivity : AppCompatActivity() {
 
         trans.commit()
     }
+
+    // 뒤로가기 처리 (스택에서 pop)
+    fun fragmentRemoveBackStack(name: String) {
+        supportFragmentManager.popBackStack(name, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+    }
+
 }
