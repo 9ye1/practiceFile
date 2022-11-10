@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +15,10 @@ import com.example.ramyeon_app.databinding.FragmentBoardMainBinding
 class BoardMainFragment : Fragment() {
 
     lateinit var boardMainFragmentBinding : FragmentBoardMainBinding
+
+    val boardListTitle = arrayOf(
+        "전체글",  "레시피",  "명예의 전당"
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +33,31 @@ class BoardMainFragment : Fragment() {
         boardMainFragmentBinding = FragmentBoardMainBinding.inflate(inflater)
         boardMainFragmentBinding.boardMainToolbar.title = "게시판 이름"
 
+
+        boardMainFragmentBinding.boardMainToolbar.inflateMenu(R.menu.board_main_menu)   // 메뉴 설정
+        boardMainFragmentBinding.boardMainToolbar.setOnMenuItemClickListener{
+           when (it.itemId) {
+               // 게시판 메뉴 아이콘을 누른 경우
+               R.id.board_main_menu_board_list -> {
+                   val boardListBuilder = AlertDialog.Builder(requireContext())
+                   boardListBuilder.setTitle("게시판 선택")
+                   boardListBuilder.setNegativeButton("Cancel", null)
+                   boardListBuilder.setItems(boardListTitle, null)
+                   boardListBuilder.show()
+                   true
+               }
+
+               // 글 쓰기 아이콘을 누른 경우
+               R.id.board_main_menu_write -> {
+                   val act = activity as BoardMainActivity
+                   act.fragmentController("board_write", true, true)
+                   true
+               }
+               else -> false
+           }
+        }
+
+        // recycler view 관련
         val boardMainRecyclerAdapter = BoardMainRecyclerAdapter()
         boardMainFragmentBinding.boardMainRecycler.adapter = boardMainRecyclerAdapter
 
@@ -63,8 +93,10 @@ class BoardMainFragment : Fragment() {
 
         inner class ViewHolderClass(boardMainRecyclerItemBinding: BoardMainRecyclerItemBinding)
             : RecyclerView.ViewHolder(boardMainRecyclerItemBinding.root), View.OnClickListener {
+                //  게시글 클릭 시 내용 보기
                 override fun onClick(v: View?) {
-
+                    val act =  activity as BoardMainActivity
+                    act.fragmentController("board_read", true, true)
                 }
             }
     }
